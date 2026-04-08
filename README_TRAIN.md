@@ -2,7 +2,6 @@
 
 This repository supports finetuning SAM3 models on custom datasets in multi-node setup or local execution. The training script is located at `sam3/train.py` and uses Hydra configuration management to handle complex training setups.
 
-
 ## Installation
 
 ```bash
@@ -22,7 +21,9 @@ python sam3/train/train.py -c configs/roboflow_v100/roboflow_v100_full_ft_100_im
 # Example: Train on ODinW13 dataset
 python sam3/train/train.py -c configs/odinw13/odinw_text_only_train.yaml
 ```
-Follow [`Roboflow 100-VL`](https://github.com/roboflow/rf100-vl/) to download the roboflow 100-vl datasets. Follow [`GLIP`](https://github.com/microsoft/GLIP) to download the ODinW datasets. The data folder should be organized as follows, and put your roboflow_vl_100_root and odinw_data_root in the job configs.
+
+Follow [`Roboflow 100-VL`](https://github.com/roboflow/rf100-vl/) to download the roboflow 100-vl datasets. Follow [`GLIP`](https://github.com/microsoft/GLIP) to download the ODinW datasets. The data folder should be organized as follows, and put your roboflow\_vl\_100\_root and odinw\_data\_root in the job configs.
+
 ```
 roboflow_vl_100_root:
   13-lkc01
@@ -58,6 +59,7 @@ python sam3/train/train.py \
 ```
 
 **Arguments:**
+
 - `-c, --config`: **Required.** Path to the configuration file (e.g., `sam3/train/configs/roboflow_v100_full_ft_100_images.yaml`)
 - `--use-cluster`: Whether to launch on a cluster (0: local, 1: cluster). Default: uses config setting
 - `--partition`: SLURM partition name for cluster execution
@@ -155,6 +157,7 @@ tensorboard --logdir /path/to/experiment_log_dir/tensorboard
 The Roboflow and ODinW configuration supports job arrays for training multiple models on different datasets:
 
 This feature is specifically enabled via,
+
 ```yaml
 submitit:
   job_array:
@@ -172,19 +175,24 @@ python sam3/train/train.py -c configs/roboflow_v100/roboflow_v100_full_ft_100_im
 ```
 
 ### Reproduce ODinW13 10-shot results
+
 Running the following job will give the results on the ODinW13 seed 300, see `odinw_train.train_file: fewshot_train_shot10_seed300` in the config file.
+
 ```bash
 # Example: Train on ODinW13 dataset
 python sam3/train/train.py -c configs/odinw13/odinw_text_only_train.yaml
 ```
+
 Change `odinw_train.train_file` to `fewshot_train_shot10_seed30` and `fewshot_train_shot10_seed3` to get the results for the other two seeds. Final results are aggregated from the three seeds. Notice that a small number of jobs may diverge during training, in which case we just use the last checkpoint's result before it diverges.
 
-
 ### Eval Script Usage
+
 With a similar setup as the training config, the training script `sam3/train.py` can also be used for evaluation, too, when setting `trainer.mode = val` in the job config. Run the following job will give the results on the zero-shot results on RF100-VL and ODinW13 datasets.
+
 ```bash
 # Example: Evaluate on Roboflow dataset
 python sam3/train/train.py -c configs/roboflow_v100/roboflow_v100_eval.yaml
 # Example: Evaluate on ODinW13 dataset
 python sam3/train/train.py -c configs/odinw13/odinw_text_only.yaml
 ```
+
